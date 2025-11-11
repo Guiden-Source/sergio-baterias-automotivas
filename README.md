@@ -194,7 +194,24 @@ Após abrir o site, verifique:
 
 ## 🌐 Deploy
 
-### Opção 1: Netlify (Recomendado - Grátis)
+### Opção 1: Vercel (Recomendado - Grátis)
+
+Deploy automático já preparado via integração Git + `vercel.json` (cache agressivo para assets). Passos:
+
+1. Acesse https://vercel.com e clique em "Add New > Project".
+2. Importe o repositório GitHub `sergio-baterias-automotivas`.
+3. Configurações:
+  - Framework preset: Other
+  - Build Command: (deixe em branco)
+  - Output Directory: (deixe em branco ou ".")
+  - Root Directory: (raiz do repo)
+4. Clique em Deploy e aguarde a URL (`.vercel.app`).
+5. Configure domínio customizado (opcional) em Settings > Domains.
+6. Verifique cabeçalhos de cache (abra DevTools > Network) para css/js.
+
+Para re‑deploy basta fazer push na branch `main`.
+
+### Opção 2: Netlify (Alternativa)
 
 1. Crie conta em [netlify.com](https://netlify.com)
 2. Arraste a pasta do projeto para o painel
@@ -205,14 +222,21 @@ Após abrir o site, verifique:
 - Build command: (deixe vazio)
 - Publish directory: `/`
 
-### Opção 2: Vercel (Grátis)
+### Cache & Headers (Vercel)
 
-1. Crie conta em [vercel.com](https://vercel.com)
-2. Conecte seu repositório GitHub ou faça upload
-3. Deploy automático
-4. Seu site estará em: `https://seu-site.vercel.app`
+O arquivo `vercel.json` define Cache-Control para CSS, JS e imagens:
+```
+public, max-age=31536000, immutable
+```
+Recomendado: ao atualizar assets, versão manual (ex: `style-v2.css`) se quiser invalidação imediata.
 
-### Opção 3: GitHub Pages (Grátis)
+### Canonical & SEO
+
+`index.html` inclui `<link rel="canonical" href="https://sergiobaterias.com.br/">` e `robots.txt` + `sitemap.xml` adicionados para melhorar indexação.
+
+### Opção 3: GitHub Pages (Alternativa)
+
+### Opção 4: Hospedagem Tradicional
 
 1. Crie repositório no GitHub
 2. Faça upload dos arquivos
@@ -221,7 +245,12 @@ Após abrir o site, verifique:
 5. Salve e aguarde
 6. Seu site estará em: `https://seu-usuario.github.io/nome-repo`
 
-### Opção 4: Hospedagem Tradicional
+### Purga de Cache na Vercel
+
+Mudanças em HTML propagam imediatamente. Assets com headers imutáveis podem permanecer em cache em navegadores; para garantir atualização:
+1. Incrementar nome do arquivo.
+2. Usar Query String versionada (menos ideal): `style.css?v=2`.
+3. Invalidação manual via painel (se configurado com plano avançado).
 
 1. Contrate hospedagem (ex: Hostinger, HostGator)
 2. Acesse via FTP/cPanel
