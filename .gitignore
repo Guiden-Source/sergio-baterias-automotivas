@@ -1,0 +1,32 @@
+# macOS
+.DS_Store
+
+# Node/npm/yarn/pnpm
+node_modules/
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Logs and temp
+*.log
+logs/
+*.tmp
+.tmp/
+.temp/
+
+# Build outputs
+/dist/
+/build/
+.cache/
+
+# Environments
+.env
+.env.*
+!.env.example
+
+# Editors/IDEs
+.vscode/
+.idea/
+
+# OS
+Thumbs.db
