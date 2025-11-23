@@ -12,7 +12,7 @@
  * - Intersection Observer for performance
  */
 
-(function() {
+(function () {
     'use strict';
 
     // ============================================
@@ -48,7 +48,7 @@
     // ============================================
     // UTILITY FUNCTIONS
     // ============================================
-    
+
     /**
      * Debounce function to limit function calls
      * @param {Function} func - Function to debounce
@@ -81,7 +81,7 @@
     // ============================================
     function handleScroll() {
         const scrolled = window.pageYOffset > 50;
-        
+
         if (scrolled !== state.hasScrolled) {
             state.hasScrolled = scrolled;
             elements.header.classList.toggle('scrolled', scrolled);
@@ -95,10 +95,10 @@
         state.isMenuOpen = !state.isMenuOpen;
         elements.mobileMenu.classList.toggle('active', state.isMenuOpen);
         elements.menuToggle.setAttribute('aria-expanded', state.isMenuOpen);
-        
+
         // Prevent body scroll when menu is open
         document.body.style.overflow = state.isMenuOpen ? 'hidden' : '';
-        
+
         // Animate hamburger icon
         const hamburger = elements.menuToggle.querySelector('.hamburger');
         if (hamburger) {
@@ -129,9 +129,9 @@
             const timeElapsed = currentTime - startTime;
             const progress = Math.min(timeElapsed / duration, 1);
             const ease = easeOutQuad(progress);
-            
+
             window.scrollTo(0, startPosition + distance * ease);
-            
+
             if (timeElapsed < duration) {
                 requestAnimationFrame(animation);
             }
@@ -142,13 +142,13 @@
 
     function handleLinkClick(e) {
         const href = this.getAttribute('href');
-        
+
         if (href && href.startsWith('#')) {
             e.preventDefault();
             const target = href === '#home' ? 'body' : href;
             smoothScrollTo(target);
             closeMenu();
-            
+
             // Update URL without jumping
             if (history.pushState) {
                 history.pushState(null, null, href);
@@ -172,11 +172,11 @@
                     // Add delay based on element position
                     const delay = Array.from(entry.target.parentElement.children)
                         .indexOf(entry.target) * CONFIG.animationDelay;
-                    
+
                     setTimeout(() => {
                         entry.target.classList.add('animated');
                     }, delay);
-                    
+
                     // Stop observing once animated
                     observer.unobserve(entry.target);
                 }
@@ -195,10 +195,10 @@
         const start = 0;
         const increment = target / (duration / 16); // 60fps
         let current = start;
-        
+
         const timer = setInterval(() => {
             current += increment;
-            
+
             if (current >= target) {
                 element.textContent = target;
                 clearInterval(timer);
@@ -221,14 +221,14 @@
             entries.forEach(entry => {
                 if (entry.isIntersecting && !state.countersAnimated) {
                     state.countersAnimated = true;
-                    
+
                     elements.statNumbers.forEach(element => {
                         const target = parseInt(element.getAttribute('data-target'));
                         if (!isNaN(target)) {
                             animateCounter(element, target, CONFIG.counterDuration);
                         }
                     });
-                    
+
                     observer.disconnect();
                 }
             });
@@ -246,7 +246,7 @@
     // ============================================
     function handleBackToTop() {
         const showBackToTop = window.pageYOffset > 500;
-        
+
         if (elements.backToTop) {
             elements.backToTop.style.opacity = showBackToTop ? '1' : '0';
             elements.backToTop.style.pointerEvents = showBackToTop ? 'auto' : 'none';
@@ -262,7 +262,7 @@
 
         const scrolled = window.pageYOffset;
         const limit = heroBackground.offsetTop + heroBackground.offsetHeight;
-        
+
         if (scrolled <= limit) {
             heroBackground.style.transform = `translateY(${scrolled * 0.35}px)`; // gentler parallax
         }
@@ -356,7 +356,7 @@
     // ============================================
     // PERFORMANCE OPTIMIZATION
     // ============================================
-    
+
     /**
      * Preload critical resources
      */
@@ -376,8 +376,8 @@
      */
     function checkBrowserSupport() {
         const isSupported = 'IntersectionObserver' in window &&
-                           'requestAnimationFrame' in window &&
-                           'addEventListener' in window;
+            'requestAnimationFrame' in window &&
+            'addEventListener' in window;
 
         if (!isSupported) {
             console.warn('Some features may not work in this browser.');
@@ -434,6 +434,70 @@
                 trackEvent('Contact', 'click', 'Phone Call');
             });
         });
+
+    }
+
+    // ============================================
+    // CAR MODEL FEATURE (WHATSAPP DYNAMIC LINKS)
+    // ============================================
+    function initCarModelFeature() {
+        const carInput = document.getElementById('carModelInput');
+        if (!carInput) return;
+
+        const whatsappLinks = document.querySelectorAll('a[href*="whatsapp.com"]');
+        const STORAGE_KEY = 'sergio_baterias_car_model';
+
+        // Helper to update a single link
+        const updateLink = (link, model) => {
+            try {
+                const url = new URL(link.href);
+                const currentText = url.searchParams.get('text') || '';
+
+                // Remove existing model info if present (to avoid duplication)
+                let cleanText = currentText.split('. Tenho um')[0];
+
+                // Append new model info if exists
+                if (model && model.trim() !== '') {
+                    const newText = `${cleanText}. Tenho um ${model.trim()}`;
+                    url.searchParams.set('text', newText);
+                } else {
+                    url.searchParams.set('text', cleanText);
+                }
+
+                link.href = url.toString();
+            } catch (e) {
+                console.error('Error updating WhatsApp link:', e);
+            }
+        };
+
+        // Update all links
+        const updateAllLinks = (model) => {
+            whatsappLinks.forEach(link => updateLink(link, model));
+        };
+
+        // Load saved model
+        const savedModel = localStorage.getItem(STORAGE_KEY);
+        if (savedModel) {
+            carInput.value = savedModel;
+            updateAllLinks(savedModel);
+        }
+
+        // Listen for changes (Input, Change, Blur for robustness)
+        const handleInput = (e) => {
+            const model = e.target.value;
+            localStorage.setItem(STORAGE_KEY, model);
+            updateAllLinks(model);
+
+            // Track input interaction (debounced tracking only)
+            if (model.length > 3) {
+                // We can keep tracking debounced if needed, or just track on blur
+            }
+        };
+
+        // Update immediately on input to avoid race condition with click
+        carInput.addEventListener('input', handleInput);
+        carInput.addEventListener('change', handleInput);
+        carInput.addEventListener('blur', handleInput);
     }
 
     // ============================================
@@ -447,7 +511,7 @@
 
         // Initialize all features
         initEventListeners();
-        
+
         if (isSupported) {
             initScrollAnimations();
             initCounters();
@@ -455,6 +519,7 @@
 
         preloadResources();
         initAnalytics();
+        initCarModelFeature();
 
         // Initial scroll check (in case page is already scrolled)
         handleScroll();
@@ -466,8 +531,8 @@
         // Log performance metrics (development only)
         if (window.performance && window.performance.timing) {
             window.addEventListener('load', () => {
-                const loadTime = window.performance.timing.domContentLoadedEventEnd - 
-                               window.performance.timing.navigationStart;
+                const loadTime = window.performance.timing.domContentLoadedEventEnd -
+                    window.performance.timing.navigationStart;
                 console.log(`⚡ Page loaded in ${loadTime}ms`);
             });
         }
