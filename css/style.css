@@ -1702,26 +1702,33 @@ img {
    ============================================ */
 .hero-input-group {
     margin: var(--spacing-lg) auto;
-    max-width: 400px;
+    max-width: 500px;
+    /* Increased from 400px */
+    width: 90%;
+    /* Ensure it doesn't overflow on small screens */
     position: relative;
     z-index: 10;
 }
 
 .hero-input {
     width: 100%;
-    padding: 1rem 1.5rem;
+    padding: 1.2rem 1.5rem;
+    /* Increased padding */
     border-radius: 50px;
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    background-color: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    /* Increased visibility */
+    background-color: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(10px);
     color: #fff;
-    font-size: 1rem;
+    font-size: 1.1rem;
+    /* Increased font size */
     transition: all var(--transition-base);
     text-align: center;
 }
 
 .hero-input::placeholder {
-    color: rgba(255, 255, 255, 0.7);
+    color: rgba(255, 255, 255, 0.9);
+    /* Increased contrast */
 }
 
 .hero-input:focus {
