@@ -1480,10 +1480,13 @@ img {
         font-size: 12px;
         height: auto;
         padding: 10px 0;
+        position: relative;
+        /* Change from fixed to relative to avoid overlap */
     }
 
     .header {
-        top: auto !important;
+        top: 0 !important;
+        /* Ensure it sticks to top */
         position: sticky;
     }
 }
