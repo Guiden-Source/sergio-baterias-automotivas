@@ -438,6 +438,103 @@
     }
 
     // ============================================
+    // PROMO POPUP LOGIC
+    // ============================================
+    function initPromoPopup() {
+        const popup = document.getElementById('promoPopup');
+        const closeBtn = document.getElementById('closePopup');
+        if (!popup || !closeBtn) return;
+
+        const STORAGE_KEY_POPUP = 'sergio_baterias_popup_daily_A'; // Key for Variation A
+        const hasSeenToday = () => {
+            const lastSeen = localStorage.getItem(STORAGE_KEY_POPUP);
+            if (!lastSeen) return false;
+
+            const now = new Date();
+            const last = new Date(lastSeen);
+
+            // Check if it's same date
+            return now.toDateString() === last.toDateString();
+        };
+
+        const showPopup = () => {
+            if (hasSeenToday()) return;
+
+            // Wait a small delay to ensure DOM is ready and transitions work
+            requestAnimationFrame(() => {
+                popup.style.display = 'flex';
+                // Trigger reflow
+                popup.offsetHeight;
+                popup.classList.add('active');
+                popup.setAttribute('aria-hidden', 'false');
+            });
+
+            // Save visual date
+            localStorage.setItem(STORAGE_KEY_POPUP, new Date().toISOString());
+        };
+
+        const closePopup = () => {
+            popup.classList.remove('active');
+            popup.setAttribute('aria-hidden', 'true');
+            setTimeout(() => {
+                popup.style.display = 'none';
+            }, 300); // match css transition
+        };
+
+        // Triggers
+
+        // 1. Time delay (6-10s) -> using 8s
+        const timer = setTimeout(showPopup, 8000);
+
+        // 2. Exit Intent (Desktop only)
+        if (window.innerWidth > 1024) {
+            document.addEventListener('mouseleave', (e) => {
+                if (e.clientY <= 0) {
+                    showPopup();
+                }
+            });
+        }
+
+        // Event Listeners
+        closeBtn.addEventListener('click', closePopup);
+
+        // Close on clicking outside container
+        popup.addEventListener('click', (e) => {
+            if (e.target === popup) {
+                closePopup();
+            }
+        });
+
+        // Close on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && popup.classList.contains('active')) {
+                closePopup();
+            }
+        });
+
+        // Dynamic Link Integration (Special case for Popup)
+        // If user typed car model, inject it into the custom popup message
+        const popupLink = popup.querySelector('.popup-cta');
+        if (popupLink) {
+            popupLink.addEventListener('click', () => {
+                const savedModel = localStorage.getItem('sergio_baterias_car_model');
+                if (savedModel) {
+                    try {
+                        const url = new URL(popupLink.href);
+                        let text = url.searchParams.get('text');
+                        // Replace the placeholder "..." with the model
+                        if (text.includes('Meu carro é...')) {
+                            text = text.replace('Meu carro é...', `Meu carro é ${savedModel}`);
+                            url.searchParams.set('text', text);
+                            popupLink.href = url.toString();
+                        }
+                    } catch (e) { console.error('Error updating popup link', e); }
+                }
+            });
+        }
+    }
+
+    // ============================================
     // CAR MODEL FEATURE (WHATSAPP DYNAMIC LINKS)
     // ============================================
     function initCarModelFeature() {
@@ -520,6 +617,7 @@
         preloadResources();
         initAnalytics();
         initCarModelFeature();
+        initPromoPopup();
 
         // Initial scroll check (in case page is already scrolled)
         handleScroll();
