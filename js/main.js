@@ -482,18 +482,8 @@
         };
 
         // Triggers
-
-        // 1. Time delay (6-10s) -> using 8s
-        const timer = setTimeout(showPopup, 8000);
-
-        // 2. Exit Intent (Desktop only)
-        if (window.innerWidth > 1024) {
-            document.addEventListener('mouseleave', (e) => {
-                if (e.clientY <= 0) {
-                    showPopup();
-                }
-            });
-        }
+        // Show immediately after load (with small buffer for rendering)
+        setTimeout(showPopup, 1000); // 1 second delay for better UX than 0ms
 
         // Event Listeners
         closeBtn.addEventListener('click', closePopup);
