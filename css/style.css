@@ -1915,6 +1915,17 @@ img {
     margin-bottom: 1.5rem;
 }
 
+.popup-image {
+    max-width: 100%;
+    height: auto;
+    max-height: 180px;
+    margin-bottom: 1rem;
+    object-fit: contain;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 .popup-price {
     font-size: 2.5rem;
     font-weight: 800;
