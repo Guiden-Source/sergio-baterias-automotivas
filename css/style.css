@@ -336,7 +336,8 @@ img {
     left: 0;
     width: 100%;
     height: 100vh;
-    background-color: rgba(15, 23, 42, 0.98);
+    background-color: rgba(15, 23, 42, 0.95);
+    backdrop-filter: blur(10px);
     transform: translateX(-100%);
     transition: transform var(--transition-base);
     z-index: calc(var(--z-header) - 1);
@@ -1785,6 +1786,10 @@ img {
     justify-content: space-between;
     gap: var(--spacing-md);
     padding-bottom: max(12px, env(safe-area-inset-bottom));
+    backdrop-filter: blur(12px);
+    /* Premium glass effect */
+    background-color: rgba(255, 255, 255, 0.95);
+    /* Slight transparency */
 }
 
 .sticky-btn {
