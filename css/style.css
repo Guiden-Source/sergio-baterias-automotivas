@@ -1322,8 +1322,10 @@ img {
     }
 
     .hero {
-        min-height: 100vh;
-        padding: 3rem 0;
+        min-height: auto;
+        /* Remove 100vh constraint for better mobile flow */
+        padding: 2rem 0 3rem;
+        /* Tighter top padding */
     }
 
     .hero-title {
@@ -1451,6 +1453,26 @@ img {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
+    }
+}
+
+/* Additional Mobile Enhancements */
+@media (max-width: 640px) {
+
+    /* Card Enhancements for Mobile */
+    .diferencial-card,
+    .depoimento-card,
+    .servico-item {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        /* Softer shadow */
+        border: 1px solid var(--gray-100);
+    }
+
+    /* Input UX: Prevent Zoom on iOS and improve touch area */
+    .hero-input {
+        font-size: 16px !important;
+        /* Prevents zoom */
+        padding: 16px !important;
     }
 }
 
@@ -1794,6 +1816,21 @@ img {
     background-color: #25D366;
     color: white;
     box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+    animation: pulse-soft 2s infinite;
+}
+
+@keyframes pulse-soft {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.02);
+    }
+
+    100% {
+        transform: scale(1);
+    }
 }
 
 .sticky-btn svg {
